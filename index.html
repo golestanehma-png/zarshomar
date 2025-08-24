@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>زرشمار</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffd700" />
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      background: linear-gradient(135deg, #ffd700, #fff8dc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 10px;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255,215,0,0.6);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    input {
+      width: 95%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 16px;
+    }
+    button {
+      background: gold;
+      border: none;
+      padding: 12px 20px;
+      margin: 8px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 16px;
+      width: 45%;
+    }
+    button:hover {
+      background: #e6c200;
+    }
+    #result {
+      margin-top: 15px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #333;
+      text-align: right;
+      direction: rtl;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>زرشمار 💎</h2>
+    <input type="number" id="weight" placeholder="وزن طلا (گرم)"><br>
+    <input type="number" id="price" placeholder="قیمت هر گرم (تومان)"><br>
+    <input type="number" id="wage" placeholder="درصد اجرت"><br>
+    <input type="number" id="profit" placeholder="درصد سود فروشنده"><br>
+    <input type="number" id="tax" placeholder="درصد مالیات"><br>
+    <button onclick="calculate()">محاسبه</button>
+    <button onclick="clearForm()">پاک کردن</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      let weight = parseFloat(document.getElementById("weight").value);
+      let price = parseFloat(document.getElementById("price").value);
+      let wage = parseFloat(document.getElementById("wage").value);
+      let profit = parseFloat(document.getElementById("profit").value);
+      let tax = parseFloat(document.getElementById("tax").value);
+
+      if (isNaN(weight) || isNaN(price)) {
+        document.getElementById("result").innerText = "لطفاً مقادیر را کامل وارد کنید";
+        return;
+      }
+
+      let base = weight * price;
+      let wageCost = base * (wage/100);
+      let profitCost = base * (profit/100);
+      let subtotal = base + wageCost + profitCost;
+      let taxCost = subtotal * (tax/100);
+      let total = subtotal + taxCost;
+
+      document.getElementById("result").innerHTML = `
+        قیمت پایه: ${base.toLocaleString()} تومان<br>
+        اجرت: ${wageCost.toLocaleString()} تومان<br>
+        سود فروشنده: ${profitCost.toLocaleString()} تومان<br>
+        مالیات: ${taxCost.toLocaleString()} تومان<br>
+        <hr>
+        ✅ قیمت نهایی: ${total.toLocaleString()} تومان
+      `;
+    }
+
+    function clearForm() {
+      document.getElementById("weight").value = "";
+      document.getElementById("price").value = "";
+      document.getElementById("wage").value = "";
+      document.getElementById("profit").value = "";
+      document.getElementById("tax").value = "";
+      document.getElementById("result").innerHTML = "";
+    }
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker Registered"));
+    }
+  </script>
+</body>
+</html>
